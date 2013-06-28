@@ -52,14 +52,16 @@ class SESConnection:
         
 class SESBackend(BaseEmailBackend):
    
-    def __init__(self,fail_silently=False,**kwargs):
+    def __init__(self, aws_access_key_id=None, aws_secret_access_key=None,  fail_silently=False,**kwargs):
+        self.aws_access_key_id = aws_access_key_id or settings.AWS_ACCESS_KEY_ID
+        self.aws_secret_access_key = aws_secret_access_key or settings.AWS_SECRET_ACCESS_KEY
         super(SESBackend, self).__init__(fail_silently=fail_silently)
         self.connection = ''
         
     def open(self):
         """Create the connection to AWS
         """
-        self.connection = SESConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+        self.connection = SESConnection(self.aws_access_key_id, self.aws_secret_access_key)
 
     def close(self):
         """Close the connection to AWS
